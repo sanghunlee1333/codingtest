@@ -1,0 +1,10 @@
+-- 코드를 입력하세요
+SELECT A.NAME, A.DATETIME  
+FROM -- 입양된 순서대로 조회
+    (SELECT ANIMAL_ID, DATETIME, NAME 
+    FROM ANIMAL_INS 
+    ORDER BY DATETIME
+    ) A
+LEFT OUTER JOIN ANIMAL_OUTS B -- 입양되었던 동물들 전부 조회하되
+ON A.ANIMAL_ID = B.ANIMAL_ID -- 입양간 동물들도 포함됨
+WHERE B.ANIMAL_ID IS NULL AND ROWNUM <= 3
