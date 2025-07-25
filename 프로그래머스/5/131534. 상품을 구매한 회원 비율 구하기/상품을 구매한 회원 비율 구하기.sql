@@ -1,0 +1,18 @@
+-- 코드를 입력하세요
+SELECT 
+    TO_NUMBER(TO_CHAR(SALES_DATE, 'YYYY')) AS YEAR, -- 년
+    TO_NUMBER(TO_CHAR(SALES_DATE, 'MM')) AS MONTH, -- 월
+    COUNT(DISTINCT B.USER_ID) AS PURCHASED_USERS, -- 구매한 회원 수
+    ROUND( -- 2021년에 가입한 회원 중, 상품을 구매한 회원의 비율
+        COUNT(DISTINCT B.USER_ID) / -- 구매한 회원들만(중복 제거)
+            (SELECT COUNT(*) -- 2021년에 가입한 회원들 중
+            FROM USER_INFO 
+            WHERE TO_CHAR(JOINED, 'YYYY') = '2021') 
+    , 1) AS PURCHASED_RATIO 
+FROM ONLINE_SALE B -- 판매 정보에서
+JOIN USER_INFO A ON A.USER_ID = B.USER_ID
+WHERE TO_CHAR(JOINED, 'YYYY') = '2021'
+GROUP BY 
+    TO_NUMBER(TO_CHAR(SALES_DATE, 'YYYY')),
+    TO_NUMBER(TO_CHAR(SALES_DATE, 'MM'))
+ORDER BY YEAR, MONTH;
